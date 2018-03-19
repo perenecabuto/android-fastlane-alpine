@@ -1,5 +1,8 @@
 FROM openjdk:alpine
 
+LABEL maintainer "Felipe Ramos (Cabuto) <perenecabuto@gmail.com>"
+
+
 ENV ANDROID_SDK_TOOLS_VERSION="3859397"
 ENV ANDROID_HOME="/usr/local/android-sdk"
 ENV ANDROID_VERSION=27
@@ -37,4 +40,5 @@ RUN mkdir -p "$ANDROID_HOME" \
 RUN $ANDROID_HOME/tools/bin/sdkmanager --update
 RUN $ANDROID_HOME/tools/bin/sdkmanager "build-tools;${ANDROID_BUILD_TOOLS_VERSION}" \
     "platforms;android-${ANDROID_VERSION}" \
-     "platform-tools"
+    "platform-tools"
+
