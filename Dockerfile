@@ -8,7 +8,7 @@ ENV ANDROID_HOME="/usr/local/android-sdk"
 ENV ANDROID_VERSION=27
 ENV ANDROID_BUILD_TOOLS_VERSION=27.0.2
 ENV FASTLANE_VERSION=2.80.0
-ENV GLIBC_VERSION=2.27-r0
+ENV GLIBC_VERSION=2.29-r0
 
 ENV SDK_URL="https://dl.google.com/android/repository/sdk-tools-linux-${ANDROID_SDK_TOOLS_VERSION}.zip"
 ENV DOWNLOAD_FILE=/tmp/sdk.zip
@@ -34,6 +34,7 @@ RUN mkdir -p "$ANDROID_HOME" \
     && wget -q -O "$DOWNLOAD_FILE" $SDK_URL \
     && unzip "$DOWNLOAD_FILE" -d "$ANDROID_HOME" \
     && rm "$DOWNLOAD_FILE" \
+    && yes | $ANDROID_HOME/tools/bin/sdkmanager --update \
     && yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
 
 
@@ -44,7 +45,9 @@ RUN $ANDROID_HOME/tools/bin/sdkmanager "build-tools;${ANDROID_BUILD_TOOLS_VERSIO
     "platform-tools"
 
 # AIDL deps
-RUN wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://raw.githubusercontent.com/sgerrand/alpine-pkg-glibc/master/sgerrand.rsa.pub
+RUN apk --no-cache add ca-certificates wget
+RUN wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
+
 RUN mkdir -p /tmp/glibc
 RUN for PACKAGE in glibc glibc-bin glibc-i18n glibc-dev; do \
         export APK_FILE="${PACKAGE}-${GLIBC_VERSION}.apk"; \
